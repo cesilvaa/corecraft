@@ -1,24 +1,58 @@
-# README
+# corecraft-v1
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Rails API that connects to Bitcoin Core nodes via JSON-RPC.
 
-Things you may want to cover:
+## Requirements
 
-* Ruby version
+- Docker and Docker Compose
+- A running Bitcoin Core container accessible on the `ubuntu_default` Docker network
 
-* System dependencies
+## Environments
 
-* Configuration
+| Environment | Network | Node | RPC Port |
+|-------------|---------|------|----------|
+| `development` | regtest | node1 | 18443 |
+| `sandbox` | signet | node2 | 18463 |
 
-* Database creation
+## Setup
 
-* Database initialization
+1. Copy the env file for your target environment:
 
-* How to run the test suite
+   ```bash
+   # development
+   cp .env.example .env.development
 
-* Services (job queues, cache servers, search engines, etc.)
+   # sandbox
+   cp .env.sandbox.example .env.sandbox
+   ```
 
-* Deployment instructions
+2. Fill in `BITCOIN_RPC_PASSWORD` with the actual RPC credentials.
 
-* ...
+## Running
+
+```bash
+# development (default)
+docker compose up
+
+# sandbox
+RAILS_ENV=sandbox docker compose up
+```
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/` | App status |
+| `GET` | `/up` | Health check |
+| `GET` | `/api/mempool/summary` | Mempool summary via Bitcoin RPC |
+
+## Running tests
+
+```bash
+docker exec corecraft-v1 bundle exec rspec
+```
+
+## Ruby and Rails versions
+
+- Ruby 4.0.3
+- Rails 8.1.3
