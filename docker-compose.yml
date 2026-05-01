@@ -1,0 +1,26 @@
+services:
+  corecraft-v1:
+    build: ./atividade-1
+    container_name: corecraft-v1
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./atividade-1:/app
+      - bundle_cache:/usr/local/bundle
+    env_file:
+      - ./atividade-1/.env
+    environment:
+      - RAILS_ENV=development
+    networks:
+      - corecraft
+      - bitcoin
+
+volumes:
+  bundle_cache:
+
+networks:
+  corecraft:
+    driver: bridge
+  bitcoin:
+    external: true
+    name: ubuntu_default
