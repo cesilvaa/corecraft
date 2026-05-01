@@ -2,6 +2,7 @@ require "active_support/core_ext/integer/time"
 
 # Sandbox environment — connects to signet node.
 Rails.application.configure do
+  config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", "sandbox_secret_key_base_only_for_local_dev_not_for_production")
   config.enable_reloading = true
   config.eager_load = false
   config.consider_all_requests_local = true

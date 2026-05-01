@@ -8,9 +8,9 @@ services:
       - ./atividade-1:/app
       - bundle_cache:/usr/local/bundle
     env_file:
-      - ./atividade-1/.env
+      - ./atividade-1/.env.${RAILS_ENV:-development}
     environment:
-      - RAILS_ENV=development
+      - RAILS_ENV=${RAILS_ENV:-development}
     networks:
       - corecraft
       - bitcoin
