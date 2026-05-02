@@ -1,7 +1,5 @@
 module Api
-  class MempoolController < ApplicationController
-    skip_before_action :verify_authenticity_token
-
+  class MempoolController < ActionController::API
     def summary
       result = MempoolSummary.new.call
       render json: result
