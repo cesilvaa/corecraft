@@ -6,5 +6,7 @@ Rails.application.routes.draw do
     get "blockchain/lag",    to: "blockchain#lag"
   end
 
+  get "panel", to: "panel#index"
+
   root "application#status"
 end

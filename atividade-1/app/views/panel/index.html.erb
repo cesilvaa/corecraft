@@ -1,0 +1,81 @@
+<% content_for :title, "CoreCraft Panel" %>
+<% content_for :head do %>
+  <%= stylesheet_link_tag "panel" %>
+<% end %>
+
+<div class="panel-wrapper">
+  <header class="panel-header">
+    <div class="panel-header__logo">
+      <span class="panel-header__icon">₿</span>
+      <span class="panel-header__title">CoreCraft</span>
+    </div>
+    <span class="panel-header__subtitle">Node Dashboard</span>
+  </header>
+
+  <% if @node_error %>
+    <div class="alert alert--error">
+      Bitcoin node unavailable. Check your RPC connection.
+    </div>
+  <% else %>
+    <main class="panel-grid">
+
+      <section class="card">
+        <div class="card__header">
+          <span class="card__icon">⛓</span>
+          <h2 class="card__title">Mempool Intelligence</h2>
+        </div>
+        <div class="card__body">
+          <div class="stat">
+            <span class="stat__label">Total Transactions</span>
+            <span class="stat__value"><%= @mempool[:tx_count] %></span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Avg Fee Rate</span>
+            <span class="stat__value"><%= @mempool[:avg_fee_rate] %> <span class="stat__unit">sat/vB</span></span>
+          </div>
+          <div class="divider"></div>
+          <h3 class="card__section-title">Fee Distribution</h3>
+          <div class="fee-distribution">
+            <div class="fee-bar">
+              <span class="fee-bar__label fee-bar__label--low">Low</span>
+              <span class="fee-bar__value"><%= @mempool[:fee_distribution][:low] %></span>
+            </div>
+            <div class="fee-bar">
+              <span class="fee-bar__label fee-bar__label--medium">Medium</span>
+              <span class="fee-bar__value"><%= @mempool[:fee_distribution][:medium] %></span>
+            </div>
+            <div class="fee-bar">
+              <span class="fee-bar__label fee-bar__label--high">High</span>
+              <span class="fee-bar__value"><%= @mempool[:fee_distribution][:high] %></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card__header">
+          <span class="card__icon">📡</span>
+          <h2 class="card__title">Node Sync Status</h2>
+        </div>
+        <div class="card__body">
+          <div class="stat">
+            <span class="stat__label">Blocks Downloaded</span>
+            <span class="stat__value"><%= number_with_delimiter(@sync[:blocks]) %></span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Total Headers</span>
+            <span class="stat__value"><%= number_with_delimiter(@sync[:headers]) %></span>
+          </div>
+          <div class="divider"></div>
+          <div class="stat stat--highlight <%= @sync[:lag].zero? ? 'stat--synced' : 'stat--lagging' %>">
+            <span class="stat__label">Lag</span>
+            <span class="stat__value">
+              <%= @sync[:lag].zero? ? "Fully synced ✓" : "#{number_with_delimiter(@sync[:lag])} blocks behind" %>
+            </span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  <% end %>
+</div>
