@@ -26,7 +26,6 @@ class BitcoinRpcClient
     http.read_timeout = 30
 
     response = http.request(request)
-
     parsed = JSON.parse(response.body)
 
     if parsed["error"]
