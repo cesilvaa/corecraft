@@ -77,3 +77,48 @@ RSpec.describe "GET /api/events/latest", type: :request do
     expect(tx.keys).to contain_exactly(:txid, :ts)
   end
 end
+
+RSpec.describe "GET /api/events/state-comparison", type: :request do
+  let(:best_hash) { "000000000000000000024a4e" }
+  let(:seen_hash) { "aabbccddeeff001122334455" }
+
+  describe "when RPC is available" do
+    before do
+      service = instance_double(StateComparison)
+      allow(StateComparison).to receive(:new).and_return(service)
+      allow(service).to receive(:call).and_return(
+        best_block: best_hash, last_seen_block: seen_hash, divergence: true
+      )
+    end
+
+    it "returns 200 with the correct JSON structure" do
+      get "/api/events/state-comparison"
+
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(body[:best_block]).to eq(best_hash)
+      expect(body[:last_seen_block]).to eq(seen_hash)
+      expect(body[:divergence]).to be true
+    end
+
+    it "returns all required keys" do
+      get "/api/events/state-comparison"
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body.keys).to contain_exactly(:best_block, :last_seen_block, :divergence)
+    end
+  end
+
+  context "when node is unavailable" do
+    before do
+      allow(StateComparison).to receive(:new).and_raise(
+        BitcoinRpcClient::ConnectionError, "connection refused"
+      )
+    end
+
+    it "returns 503" do
+      get "/api/events/state-comparison"
+      expect(response).to have_http_status(:service_unavailable)
+    end
+  end
+end
