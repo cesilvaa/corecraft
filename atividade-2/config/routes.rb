@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     get "mempool/summary",   to: "mempool#summary"
     get "blockchain/lag",    to: "blockchain#lag"
+    get "events/summary",    to: "events#summary"
   end
 
   get "panel", to: "panel#index"

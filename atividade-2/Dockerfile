@@ -6,6 +6,7 @@ RUN apt-get update -qq && \
       curl \
       git \
       libyaml-dev \
+      libzmq5 \
       pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
