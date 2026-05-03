@@ -19,7 +19,7 @@ services:
     build: ./atividade-2
     container_name: corecraft-v2
     ports:
-      - "3001:3000"
+      - "3000:3000"
     volumes:
       - ./atividade-2:/app
       - bundle_cache_v2:/usr/local/bundle
