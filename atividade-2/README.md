@@ -74,10 +74,12 @@ export BITCOIN_CLI=/opt/bitcoin/bin/bitcoin-cli
 export NODE_DATADIR=/workspace/bitcoin/node1
 ```
 
-### 1. Create wallet and get a mining address
+### 1. Create (or load) wallet and get a mining address
 
 ```bash
-$BITCOIN_CLI -datadir=$NODE_DATADIR createwallet "main"
+$BITCOIN_CLI -datadir=$NODE_DATADIR createwallet "main" 2>/dev/null || \
+  $BITCOIN_CLI -datadir=$NODE_DATADIR loadwallet "main" 2>/dev/null || \
+  echo "Wallet already loaded"
 
 ADDR=$($BITCOIN_CLI -datadir=$NODE_DATADIR getnewaddress)
 echo "Mining address: $ADDR"
