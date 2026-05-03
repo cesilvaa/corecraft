@@ -129,45 +129,43 @@
         </div>
       </section>
 
-      <%# ── Últimos Eventos ── %>
-      <section class="card card--wide">
+      <%# ── Latest Events ── %>
+      <section class="card">
         <div class="card__header">
           <span class="card__icon">🔍</span>
-          <h2 class="card__title">Últimos Eventos</h2>
+          <h2 class="card__title">Latest Events</h2>
         </div>
-        <div class="card__body card__body--split">
+        <div class="card__body">
 
-          <div class="event-column">
-            <h3 class="card__section-title">Últimos Blocos</h3>
-            <% if @event_latest[:blocks].empty? %>
-              <p class="event-empty">No blocks observed yet</p>
-            <% else %>
-              <ul class="event-list">
-                <% @event_latest[:blocks].reverse.each do |blk| %>
-                  <li class="event-item">
-                    <code class="event-item__hash"><%= blk[:hash] %></code>
-                    <span class="event-item__time"><%= Time.at(blk[:ts]).utc.strftime("%H:%M:%S") %></span>
-                  </li>
-                <% end %>
-              </ul>
-            <% end %>
-          </div>
+          <h3 class="card__section-title">Latest Blocks</h3>
+          <% if @event_latest[:blocks].empty? %>
+            <p class="event-empty">No blocks observed yet</p>
+          <% else %>
+            <ul class="event-list">
+              <% @event_latest[:blocks].reverse.each do |blk| %>
+                <li class="event-item">
+                  <code class="event-item__hash"><%= blk[:hash] %></code>
+                  <span class="event-item__time"><%= Time.at(blk[:ts]).utc.strftime("%H:%M:%S") %></span>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
 
-          <div class="event-column">
-            <h3 class="card__section-title">Últimas Transações</h3>
-            <% if @event_latest[:txs].empty? %>
-              <p class="event-empty">No transactions observed yet</p>
-            <% else %>
-              <ul class="event-list">
-                <% @event_latest[:txs].reverse.each do |tx| %>
-                  <li class="event-item">
-                    <code class="event-item__hash"><%= tx[:txid] %></code>
-                    <span class="event-item__time"><%= Time.at(tx[:ts]).utc.strftime("%H:%M:%S") %></span>
-                  </li>
-                <% end %>
-              </ul>
-            <% end %>
-          </div>
+          <div class="divider"></div>
+
+          <h3 class="card__section-title">Latest Transactions</h3>
+          <% if @event_latest[:txs].empty? %>
+            <p class="event-empty">No transactions observed yet</p>
+          <% else %>
+            <ul class="event-list">
+              <% @event_latest[:txs].reverse.each do |tx| %>
+                <li class="event-item">
+                  <code class="event-item__hash"><%= tx[:txid] %></code>
+                  <span class="event-item__time"><%= Time.at(tx[:ts]).utc.strftime("%H:%M:%S") %></span>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
 
         </div>
       </section>

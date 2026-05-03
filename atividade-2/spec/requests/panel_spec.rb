@@ -56,9 +56,9 @@ RSpec.describe "GET /panel", type: :request do
     expect(response.body).to include("0.75")
   end
 
-  it "renders the últimos eventos card" do
+  it "renders the latest events card" do
     get "/panel"
-    expect(response.body).to include("Últimos Eventos")
+    expect(response.body).to include("Latest Events")
     expect(response.body).to include("blockhash1")
     expect(response.body).to include("txid1")
   end
