@@ -69,18 +69,17 @@ Em desenvolvimento.
 
 ### Rede Docker
 
-O `docker-compose.yml` precisa saber em qual rede Docker o container Bitcoin Core está disponível. Copie os arquivos de exemplo na raiz e preencha com o nome da sua rede:
+O `docker-compose.yml` precisa saber em qual rede Docker o container Bitcoin Core está disponível. Copie o arquivo de exemplo na raiz e preencha com o nome da sua rede:
 
 ```bash
 cp .env.example .env
-cp .env.sandbox.example .env.sandbox
 ```
 
 | Variável | Descrição |
 |----------|-----------|
 | `BITCOIN_DOCKER_NETWORK` | Nome da rede Docker externa onde o Bitcoin Core está acessível (veja `docker network ls`) |
 
-> O Docker Compose carrega `.env` automaticamente. Para o ambiente sandbox, o arquivo `.env.sandbox` precisa ser passado explicitamente via `--env-file` (veja os comandos em [Como executar](#como-executar)).
+> Essa configuração é de infraestrutura e vale para todos os ambientes — não há variante sandbox.
 
 ### Variáveis da aplicação
 
@@ -135,13 +134,13 @@ A partir da **v2**, há variáveis adicionais para o listener ZMQ:
 docker compose up corecraft-v1
 
 # corecraft-v1 — sandbox
-RAILS_ENV=sandbox docker compose --env-file .env.sandbox up corecraft-v1
+RAILS_ENV=sandbox docker compose up corecraft-v1
 
 # corecraft-v2 — development (padrão)
 docker compose up corecraft-v2
 
 # corecraft-v2 — sandbox
-RAILS_ENV=sandbox docker compose --env-file .env.sandbox up corecraft-v2
+RAILS_ENV=sandbox docker compose up corecraft-v2
 ```
 
 ### Trocando de ambiente
@@ -151,7 +150,7 @@ RAILS_ENV=sandbox docker compose --env-file .env.sandbox up corecraft-v2
 docker stop corecraft-vN && docker rm corecraft-vN
 
 # Subir com o outro ambiente
-RAILS_ENV=sandbox docker compose --env-file .env.sandbox up corecraft-vN
+RAILS_ENV=sandbox docker compose up corecraft-vN
 ```
 
 ---
