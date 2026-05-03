@@ -40,4 +40,4 @@ networks:
     driver: bridge
   bitcoin:
     external: true
-    name: ubuntu_default
+    name: ${BITCOIN_DOCKER_NETWORK:?Defina BITCOIN_DOCKER_NETWORK no arquivo .env da raiz (veja .env.example)}
