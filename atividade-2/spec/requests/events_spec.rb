@@ -35,3 +35,45 @@ RSpec.describe "GET /api/events/summary", type: :request do
     )
   end
 end
+
+RSpec.describe "GET /api/events/latest", type: :request do
+  let(:mock_latest) do
+    {
+      blocks: [
+        { hash: "abc...", ts: 1_712_345_600 },
+        { hash: "def...", ts: 1_712_345_678 }
+      ],
+      txs: [
+        { txid: "tx1...", ts: 1_712_345_670 },
+        { txid: "tx2...", ts: 1_712_345_675 },
+        { txid: "tx3...", ts: 1_712_345_678 }
+      ]
+    }
+  end
+
+  before do
+    allow(ZmqEventStore).to receive(:latest).and_return(mock_latest)
+  end
+
+  it "returns 200 with blocks and txs arrays" do
+    get "/api/events/latest"
+
+    expect(response).to have_http_status(:ok)
+    body = JSON.parse(response.body, symbolize_names: true)
+
+    expect(body[:blocks].size).to eq(2)
+    expect(body[:txs].size).to eq(3)
+  end
+
+  it "returns blocks with hash and ts" do
+    get "/api/events/latest"
+    block = JSON.parse(response.body, symbolize_names: true)[:blocks].first
+    expect(block.keys).to contain_exactly(:hash, :ts)
+  end
+
+  it "returns txs with txid and ts" do
+    get "/api/events/latest"
+    tx = JSON.parse(response.body, symbolize_names: true)[:txs].first
+    expect(tx.keys).to contain_exactly(:txid, :ts)
+  end
+end

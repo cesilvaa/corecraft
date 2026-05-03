@@ -77,4 +77,43 @@ RSpec.describe ZmqEventStore do
       expect(described_class.summary[:tx_per_second]).to eq(expected)
     end
   end
+
+  describe ".latest" do
+    it "returns empty arrays when store is empty" do
+      result = described_class.latest
+      expect(result[:blocks]).to eq([])
+      expect(result[:txs]).to eq([])
+    end
+
+    it "returns blocks with hash and ts keys" do
+      described_class.push_block("abc123")
+      block = described_class.latest[:blocks].first
+      expect(block.keys).to contain_exactly(:hash, :ts)
+      expect(block[:hash]).to eq("abc123")
+    end
+
+    it "returns txs with txid and ts keys" do
+      described_class.push_tx("tx001")
+      tx = described_class.latest[:txs].first
+      expect(tx.keys).to contain_exactly(:txid, :ts)
+      expect(tx[:txid]).to eq("tx001")
+    end
+
+    it "limits blocks to LATEST_BLOCKS" do
+      (ZmqEventStore::LATEST_BLOCKS + 5).times { |i| described_class.push_block("h#{i}") }
+      expect(described_class.latest[:blocks].size).to eq(ZmqEventStore::LATEST_BLOCKS)
+    end
+
+    it "limits txs to LATEST_TXS" do
+      (ZmqEventStore::LATEST_TXS + 5).times { |i| described_class.push_tx("t#{i}") }
+      expect(described_class.latest[:txs].size).to eq(ZmqEventStore::LATEST_TXS)
+    end
+
+    it "returns the most recent events last" do
+      described_class.push_block("old")
+      described_class.push_block("new")
+      blocks = described_class.latest[:blocks]
+      expect(blocks.last[:hash]).to eq("new")
+    end
+  end
 end

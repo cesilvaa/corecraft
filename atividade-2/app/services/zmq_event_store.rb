@@ -2,6 +2,8 @@ module ZmqEventStore
   MAX_BLOCKS     = 50
   MAX_TXS        = 500
   WINDOW_SECONDS = 60
+  LATEST_BLOCKS  = 10
+  LATEST_TXS     = 25
 
   @mutex  = Mutex.new
   @blocks = []
@@ -36,6 +38,15 @@ module ZmqEventStore
         tx_observed:     @txs.size,
         last_event_time: last_event_at,
         tx_per_second:   (recent_tx_count.to_f / WINDOW_SECONDS).round(2)
+      }
+    end
+  end
+
+  def latest
+    @mutex.synchronize do
+      {
+        blocks: @blocks.last(LATEST_BLOCKS).map { |e| { hash: e[:hash], ts: e[:at] } },
+        txs:    @txs.last(LATEST_TXS).map    { |e| { txid: e[:txid], ts: e[:at] } }
       }
     end
   end
