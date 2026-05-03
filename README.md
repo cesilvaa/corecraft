@@ -126,11 +126,23 @@ A partir da **v2**, há variáveis adicionais para o listener ZMQ:
 
 ## Como executar
 
-Na primeira execução o container `bitcoin` baixa e instala o Bitcoin Core automaticamente.
+Na primeira execução o container `bitcoin` baixa e instala o Bitcoin Core automaticamente. Os nodes só sobem se as variáveis `NODE1_NETWORK` e/ou `NODE2_NETWORK` forem definidas.
 
 ```bash
-# Subir o Bitcoin Core
+# Subir o container sem iniciar nenhum node
 docker compose up bitcoin
+
+# Subir com node1 em regtest e node2 em signet (configuração padrão do curso)
+NODE1_NETWORK=regtest NODE2_NETWORK=signet docker compose up bitcoin
+
+# Subir apenas o node1 em regtest
+NODE1_NETWORK=regtest docker compose up bitcoin
+
+# Outras combinações possíveis
+NODE1_NETWORK=signet NODE2_NETWORK=regtest docker compose up bitcoin
+NODE1_NETWORK=signet NODE2_NETWORK=signet docker compose up bitcoin
+NODE1_NETWORK=regtest NODE2_NETWORK=regtest docker compose up bitcoin
+```
 
 # corecraft-v1 — development (padrão)
 docker compose up corecraft-v1

@@ -14,32 +14,34 @@ if [ ! -d "$BITCOIN_DEST" ]; then
     echo "[bitcoin] Bitcoin Core ${LATEST} instalado."
 fi
 
-# Gerar bitcoin.conf a partir dos templates (executado a cada inicialização
-# para refletir mudanças nas variáveis de ambiente)
-for NODE in node1 node2; do
-    mkdir -p "/workspace/bitcoin/${NODE}"
-    envsubst '${BITCOIN_RPC_USER} ${BITCOIN_RPC_PASSWORD}' \
-        < "/etc/bitcoin/${NODE}/bitcoin.conf.template" \
-        > "/workspace/bitcoin/${NODE}/bitcoin.conf"
-    echo "[bitcoin] Config de ${NODE} gerada."
-done
-
 start_node() {
-    local datadir="$1"
-    local name
-    name=$(basename "$datadir")
+    local node="$1"
+    local network="$2"
+    local datadir="/workspace/bitcoin/${node}"
     local pidfile="${datadir}/bitcoind.pid"
 
+    mkdir -p "$datadir"
+    NODE_ACTIVE_NETWORK="$network" \
+        envsubst '${BITCOIN_RPC_USER} ${BITCOIN_RPC_PASSWORD} ${NODE_ACTIVE_NETWORK}' \
+        < "/etc/bitcoin/${node}/bitcoin.conf.template" \
+        > "${datadir}/bitcoin.conf"
+    echo "[bitcoin] Config de ${node} (${network}) gerada."
+
     if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
-        echo "[bitcoin] ${name} já está em execução (pid $(cat "$pidfile"))"
+        echo "[bitcoin] ${node} já está em execução (pid $(cat "$pidfile"))"
     else
         rm -f "$pidfile"
         bitcoind -datadir="$datadir" -daemon -pid="$pidfile"
-        echo "[bitcoin] ${name} iniciado."
+        echo "[bitcoin] ${node} iniciado na rede ${network}."
     fi
 }
 
-start_node /workspace/bitcoin/node1
-start_node /workspace/bitcoin/node2
+if [ -n "$NODE1_NETWORK" ]; then
+    start_node node1 "$NODE1_NETWORK"
+fi
+
+if [ -n "$NODE2_NETWORK" ]; then
+    start_node node2 "$NODE2_NETWORK"
+fi
 
 exec "$@"

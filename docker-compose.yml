@@ -6,6 +6,9 @@ services:
       - bitcoin_node1:/workspace/bitcoin/node1
       - bitcoin_node2:/workspace/bitcoin/node2
     env_file: .env
+    environment:
+      - NODE1_NETWORK=${NODE1_NETWORK:-}
+      - NODE2_NETWORK=${NODE2_NETWORK:-}
     networks:
       - corecraft
 

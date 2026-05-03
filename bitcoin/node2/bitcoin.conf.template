@@ -1,4 +1,4 @@
-signet=1
+${NODE_ACTIVE_NETWORK}=1
 rpcuser=${BITCOIN_RPC_USER}
 rpcpassword=${BITCOIN_RPC_PASSWORD}
 fallbackfee=0.0001
