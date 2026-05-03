@@ -1,4 +1,14 @@
 services:
+  bitcoin:
+    build: ./bitcoin
+    container_name: bitcoin
+    volumes:
+      - bitcoin_node1:/workspace/bitcoin/node1
+      - bitcoin_node2:/workspace/bitcoin/node2
+    env_file: .env
+    networks:
+      - corecraft
+
   corecraft-v1:
     build: ./atividade-1
     container_name: corecraft-v1
@@ -11,9 +21,10 @@ services:
       - ./atividade-1/.env.${RAILS_ENV:-development}
     environment:
       - RAILS_ENV=${RAILS_ENV:-development}
+      - BITCOIN_RPC_USER=${BITCOIN_RPC_USER}
+      - BITCOIN_RPC_PASSWORD=${BITCOIN_RPC_PASSWORD}
     networks:
       - corecraft
-      - bitcoin
 
   corecraft-v2:
     build: ./atividade-2
@@ -27,17 +38,20 @@ services:
       - ./atividade-2/.env.${RAILS_ENV:-development}
     environment:
       - RAILS_ENV=${RAILS_ENV:-development}
+      - BITCOIN_RPC_USER=${BITCOIN_RPC_USER}
+      - BITCOIN_RPC_PASSWORD=${BITCOIN_RPC_PASSWORD}
     networks:
       - corecraft
-      - bitcoin
 
 volumes:
   bundle_cache:
   bundle_cache_v2:
+  bitcoin_node1:
+  bitcoin_node2:
 
 networks:
   corecraft:
     driver: bridge
-  bitcoin:
-    external: true
-    name: ${BITCOIN_DOCKER_NETWORK:?Defina BITCOIN_DOCKER_NETWORK no arquivo .env da raiz (veja .env.example)}
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

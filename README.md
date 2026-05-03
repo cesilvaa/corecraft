@@ -8,9 +8,10 @@ O objetivo deste repositório é organizar os trabalhos desenvolvidos ao longo d
 
 ```text
 corecraft/
-├── atividade-1/   corecraft-v1
-├── atividade-2/   corecraft-v2
-├── atividade-3/   corecraft-v3
+├── bitcoin/         container Bitcoin Core (dois nodes)
+├── atividade-1/     corecraft-v1
+├── atividade-2/     corecraft-v2
+├── atividade-3/     corecraft-v3
 ├── docker-compose.yml
 └── README.md
 ```
@@ -61,15 +62,14 @@ Em desenvolvimento.
 ## Requisitos
 
 - Docker e Docker Compose
-- Container Bitcoin Core rodando e acessível em uma rede Docker externa
 
 ---
 
 ## Configuração
 
-### Rede Docker
+### Credenciais RPC
 
-O `docker-compose.yml` precisa saber em qual rede Docker o container Bitcoin Core está disponível. Copie o arquivo de exemplo na raiz e preencha com o nome da sua rede:
+Copie o arquivo de exemplo na raiz e preencha com as credenciais que serão usadas pelos nodes Bitcoin Core e pelas aplicações Rails:
 
 ```bash
 cp .env.example .env
@@ -77,9 +77,10 @@ cp .env.example .env
 
 | Variável | Descrição |
 |----------|-----------|
-| `BITCOIN_DOCKER_NETWORK` | Nome da rede Docker externa onde o Bitcoin Core está acessível (veja `docker network ls`) |
+| `BITCOIN_RPC_USER` | Usuário RPC (corresponde a `rpcuser` no `bitcoin.conf`) |
+| `BITCOIN_RPC_PASSWORD` | Senha RPC (corresponde a `rpcpassword` no `bitcoin.conf`) |
 
-> Essa configuração é de infraestrutura e vale para todos os ambientes — não há variante sandbox.
+As credenciais ficam em um único lugar e são injetadas automaticamente tanto no container Bitcoin Core quanto nas aplicações Rails.
 
 ### Variáveis da aplicação
 
@@ -93,43 +94,44 @@ cp atividade-N/.env.example atividade-N/.env.development
 cp atividade-N/.env.sandbox.example atividade-N/.env.sandbox
 ```
 
-### Variáveis de ambiente
-
-**Ambiente `development`** conecta a um node **regtest**.  
-**Ambiente `sandbox`** conecta a um node **signet**.
-
-Preencha com os dados do node ao qual você tem acesso:
+**Ambiente `development`** conecta ao node1 (**regtest**).  
+**Ambiente `sandbox`** conecta ao node2 (**signet**).
 
 | Variável | Descrição |
 |----------|-----------|
-| `BITCOIN_RPC_HOST` | Hostname ou IP do node Bitcoin Core |
-| `BITCOIN_RPC_PORT` | Porta RPC configurada no `bitcoin.conf` |
-| `BITCOIN_RPC_USER` | Usuário definido em `rpcuser` |
-| `BITCOIN_RPC_PASSWORD` | Senha definida em `rpcpassword` |
+| `BITCOIN_RPC_HOST` | Nome do serviço Bitcoin Core no Docker (`bitcoin`) |
+| `BITCOIN_RPC_PORT` | Porta RPC do node |
 | `BITCOIN_RPC_NETWORK` | `regtest` (development) ou `signet` (sandbox) |
 
 A partir da **v2**, há variáveis adicionais para o listener ZMQ:
 
 | Variável | Descrição |
 |----------|-----------|
-| `BITCOIN_ZMQ_HOST` | Hostname ou IP do node (geralmente o mesmo do RPC) |
-| `BITCOIN_ZMQ_PORT` | Porta ZMQ configurada em `zmqpubhashblock` / `zmqpubhashtx` no `bitcoin.conf` |
+| `BITCOIN_ZMQ_HOST` | Nome do serviço Bitcoin Core no Docker (`bitcoin`) |
+| `BITCOIN_ZMQ_PORT` | Porta ZMQ do node |
 | `BITCOIN_ZMQ_ENABLED` | `true` para ativar o listener |
 
 ### Convenção de arquivos de ambiente
 
 | Arquivo | Versionado | Finalidade |
 |---------|------------|-----------|
-| `.env.example` | Sim | Template para development |
-| `.env.sandbox.example` | Sim | Template para sandbox |
-| `.env.development` | **Não** | Credenciais reais de development |
-| `.env.sandbox` | **Não** | Credenciais reais de sandbox |
+| `.env.example` | Sim | Template de credenciais compartilhadas |
+| `atividade-N/.env.example` | Sim | Template de conexão para development |
+| `atividade-N/.env.sandbox.example` | Sim | Template de conexão para sandbox |
+| `.env` | **Não** | Credenciais reais |
+| `atividade-N/.env.development` | **Não** | Configuração real de development |
+| `atividade-N/.env.sandbox` | **Não** | Configuração real de sandbox |
 
 ---
 
 ## Como executar
 
+Na primeira execução o container `bitcoin` baixa e instala o Bitcoin Core automaticamente.
+
 ```bash
+# Subir o Bitcoin Core
+docker compose up bitcoin
+
 # corecraft-v1 — development (padrão)
 docker compose up corecraft-v1
 
@@ -172,14 +174,14 @@ docker exec corecraft-v2 bundle exec rspec --format documentation
 Os comandos abaixo devem ser executados **dentro do container Bitcoin Core**:
 
 ```bash
-docker exec -it ubuntu bash
+docker exec -it bitcoin bash
 ```
 
-Dentro do container, defina o caminho do `bitcoin-cli` e do datadir do node regtest que você quer usar:
+Dentro do container, defina o caminho do `bitcoin-cli` e do datadir do node regtest:
 
 ```bash
 export BITCOIN_CLI=/opt/bitcoin/bin/bitcoin-cli
-export NODE_DATADIR=<caminho-do-datadir-do-node-regtest>
+export NODE_DATADIR=/workspace/bitcoin/node1
 ```
 
 ### 1. Criar (ou carregar) a wallet e obter um endereço de mineração
