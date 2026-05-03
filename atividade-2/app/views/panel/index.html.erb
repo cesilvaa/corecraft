@@ -17,8 +17,27 @@
       Bitcoin node unavailable. Check your RPC connection.
     </div>
   <% else %>
+
+    <%# ── Divergence banner ── %>
+    <% divergence = @state_comparison&.dig(:divergence) %>
+    <div class="divergence-banner <%= divergence ? 'divergence-banner--alert' : 'divergence-banner--ok' %>">
+      <span class="divergence-banner__icon"><%= divergence ? '⚠' : '✓' %></span>
+      <div class="divergence-banner__content">
+        <span class="divergence-banner__title">
+          <%= divergence ? 'Block divergence detected' : 'ZMQ and RPC in sync' %>
+        </span>
+        <div class="divergence-banner__hashes">
+          <span class="divergence-banner__hash-label">RPC best block:</span>
+          <code class="divergence-banner__hash"><%= @state_comparison&.dig(:best_block) || '—' %></code>
+          <span class="divergence-banner__hash-label">Last ZMQ block:</span>
+          <code class="divergence-banner__hash"><%= @state_comparison&.dig(:last_seen_block) || 'none yet' %></code>
+        </div>
+      </div>
+    </div>
+
     <main class="panel-grid">
 
+      <%# ── Mempool Intelligence ── %>
       <section class="card">
         <div class="card__header">
           <span class="card__icon">⛓</span>
@@ -52,6 +71,7 @@
         </div>
       </section>
 
+      <%# ── Node Sync Status ── %>
       <section class="card">
         <div class="card__header">
           <span class="card__icon">📡</span>
@@ -73,6 +93,82 @@
               <%= @sync[:lag].zero? ? "Fully synced ✓" : "#{number_with_delimiter(@sync[:lag])} blocks behind" %>
             </span>
           </div>
+        </div>
+      </section>
+
+      <%# ── Event Activity ── %>
+      <section class="card">
+        <div class="card__header">
+          <span class="card__icon">⚡</span>
+          <h2 class="card__title">Event Activity</h2>
+        </div>
+        <div class="card__body">
+          <div class="stat">
+            <span class="stat__label">Transactions Received</span>
+            <span class="stat__value"><%= @event_summary[:tx_observed] %></span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Blocks Received</span>
+            <span class="stat__value"><%= @event_summary[:blocks_observed] %></span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Tx Rate</span>
+            <span class="stat__value"><%= @event_summary[:tx_per_second] %> <span class="stat__unit">tx/s</span></span>
+          </div>
+          <div class="divider"></div>
+          <div class="stat">
+            <span class="stat__label">Last Event</span>
+            <span class="stat__value stat__value--mono">
+              <% if @event_summary[:last_event_time] %>
+                <%= Time.at(@event_summary[:last_event_time]).utc.strftime("%H:%M:%S UTC") %>
+              <% else %>
+                <span class="stat__value--muted">no events yet</span>
+              <% end %>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <%# ── Últimos Eventos ── %>
+      <section class="card card--wide">
+        <div class="card__header">
+          <span class="card__icon">🔍</span>
+          <h2 class="card__title">Últimos Eventos</h2>
+        </div>
+        <div class="card__body card__body--split">
+
+          <div class="event-column">
+            <h3 class="card__section-title">Últimos Blocos</h3>
+            <% if @event_latest[:blocks].empty? %>
+              <p class="event-empty">No blocks observed yet</p>
+            <% else %>
+              <ul class="event-list">
+                <% @event_latest[:blocks].reverse.each do |blk| %>
+                  <li class="event-item">
+                    <code class="event-item__hash"><%= blk[:hash] %></code>
+                    <span class="event-item__time"><%= Time.at(blk[:ts]).utc.strftime("%H:%M:%S") %></span>
+                  </li>
+                <% end %>
+              </ul>
+            <% end %>
+          </div>
+
+          <div class="event-column">
+            <h3 class="card__section-title">Últimas Transações</h3>
+            <% if @event_latest[:txs].empty? %>
+              <p class="event-empty">No transactions observed yet</p>
+            <% else %>
+              <ul class="event-list">
+                <% @event_latest[:txs].reverse.each do |tx| %>
+                  <li class="event-item">
+                    <code class="event-item__hash"><%= tx[:txid] %></code>
+                    <span class="event-item__time"><%= Time.at(tx[:ts]).utc.strftime("%H:%M:%S") %></span>
+                  </li>
+                <% end %>
+              </ul>
+            <% end %>
+          </div>
+
         </div>
       </section>
 

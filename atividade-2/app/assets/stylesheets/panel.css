@@ -164,6 +164,114 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* ── Card wide (full-width) ── */
+.card--wide { grid-column: 1 / -1; }
+
+.card__body--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* ── Event columns ── */
+.event-column { min-width: 0; }
+
+.event-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.event-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  background: #1c2128;
+  border-radius: 6px;
+  min-width: 0;
+}
+
+.event-item__hash {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+  color: #79c0ff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+
+.event-item__time {
+  font-size: 0.72rem;
+  color: #7d8590;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.event-empty {
+  font-size: 0.82rem;
+  color: #7d8590;
+  padding: 0.5rem 0;
+}
+
+.stat__value--mono {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.95rem;
+}
+
+.stat__value--muted { color: #7d8590; font-weight: 400; }
+
+/* ── Divergence banner ── */
+.divergence-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  border: 1px solid;
+}
+
+.divergence-banner--ok {
+  background: #3fb9501a;
+  border-color: #3fb95044;
+  color: #3fb950;
+}
+
+.divergence-banner--alert {
+  background: #e3b3411a;
+  border-color: #e3b34144;
+  color: #e3b341;
+}
+
+.divergence-banner__icon { font-size: 1.2rem; line-height: 1.4; flex-shrink: 0; }
+
+.divergence-banner__content { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+
+.divergence-banner__title { font-size: 0.9rem; font-weight: 600; }
+
+.divergence-banner__hashes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  align-items: center;
+}
+
+.divergence-banner__hash-label { font-size: 0.75rem; color: #7d8590; }
+
+.divergence-banner__hash {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+  color: #f0f6fc;
+  word-break: break-all;
+}
+
 /* ── Alert ── */
 .alert {
   padding: 1rem 1.25rem;
