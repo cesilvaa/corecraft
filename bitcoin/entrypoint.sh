@@ -3,7 +3,7 @@ set -e
 
 BITCOIN_DEST="/opt/bitcoin"
 
-if [ ! -d "$BITCOIN_DEST" ]; then
+if [ ! -f "$BITCOIN_DEST/bin/bitcoind" ]; then
     echo "[bitcoin] Buscando versão mais recente do Bitcoin Core..."
     LATEST=$(curl -sf https://api.github.com/repos/bitcoin/bitcoin/releases/latest \
         | jq -r '.tag_name' | sed 's/^v//')

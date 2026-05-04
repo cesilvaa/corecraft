@@ -3,8 +3,9 @@ services:
     build: ./bitcoin
     container_name: bitcoin
     volumes:
-      - bitcoin_node1:/workspace/bitcoin/node1
-      - bitcoin_node2:/workspace/bitcoin/node2
+      - bitcoin_install:/opt/bitcoin
+      - ./bitcoin/node1/data:/workspace/bitcoin/node1
+      - ./bitcoin/node2/data:/workspace/bitcoin/node2
     env_file: .env
     environment:
       - NODE1_NETWORK=${NODE1_NETWORK:-}
@@ -49,8 +50,7 @@ services:
 volumes:
   bundle_cache:
   bundle_cache_v2:
-  bitcoin_node1:
-  bitcoin_node2:
+  bitcoin_install:
 
 networks:
   corecraft:

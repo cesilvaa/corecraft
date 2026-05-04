@@ -48,5 +48,9 @@ chainstate/
 indexes/
 wallets/
 
+# Bitcoin node data (bind mounts)
+bitcoin/node1/data/
+bitcoin/node2/data/
+
 # Local planning notes
 planejamento/
