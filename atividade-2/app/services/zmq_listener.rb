@@ -3,11 +3,7 @@ require "ffi-rzmq"
 class ZmqListener
   RECONNECT_DELAY = 5
 
-  def self.start
-    new.tap(&:run_in_background)
-  end
-
-  def run_in_background
+  def start
     Thread.new { run }
   end
 
