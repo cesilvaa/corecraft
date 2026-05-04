@@ -89,7 +89,7 @@ Cada versão tem seus próprios arquivos de ambiente dentro de `atividade-N/`. O
 
 ```bash
 # development
-cp atividade-N/.env.example atividade-N/.env.development
+cp atividade-N/.env.development.example atividade-N/.env.development
 
 # sandbox
 cp atividade-N/.env.sandbox.example atividade-N/.env.sandbox
@@ -117,7 +117,7 @@ A partir da **v2**, há variáveis adicionais para o listener ZMQ:
 | Arquivo | Versionado | Finalidade |
 |---------|------------|-----------|
 | `.env.example` | Sim | Template de credenciais compartilhadas |
-| `atividade-N/.env.example` | Sim | Template de conexão para development |
+| `atividade-N/.env.development.example` | Sim | Template de conexão para development |
 | `atividade-N/.env.sandbox.example` | Sim | Template de conexão para sandbox |
 | `.env` | **Não** | Credenciais reais |
 | `atividade-N/.env.development` | **Não** | Configuração real de development |
