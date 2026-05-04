@@ -1,16 +1,9 @@
-${NODE_ACTIVE_NETWORK}=1
+signet=1
 rpcuser=${BITCOIN_RPC_USER}
 rpcpassword=${BITCOIN_RPC_PASSWORD}
 fallbackfee=0.0001
 rpcallowip=127.0.0.1
 rpcallowip=172.16.0.0/12
-
-[regtest]
-rpcport=18463
-port=18464
-rpcbind=0.0.0.0
-zmqpubhashblock=tcp://0.0.0.0:28334
-zmqpubhashtx=tcp://0.0.0.0:28334
 
 [signet]
 rpcport=18473

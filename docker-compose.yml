@@ -1,15 +1,21 @@
 services:
-  bitcoin:
-    build: ./bitcoin
-    container_name: bitcoin
+  bitcoin-regtest:
+    build: ./bitcoin-regtest
+    container_name: bitcoin-regtest
     volumes:
-      - bitcoin_install:/opt/bitcoin
-      - ./bitcoin/node1/data:/workspace/bitcoin/node1
-      - ./bitcoin/node2/data:/workspace/bitcoin/node2
+      - bitcoin_regtest_install:/opt/bitcoin
+      - ./bitcoin-regtest/data:/workspace/bitcoin
     env_file: .env
-    environment:
-      - NODE1_NETWORK=${NODE1_NETWORK:-}
-      - NODE2_NETWORK=${NODE2_NETWORK:-}
+    networks:
+      - corecraft
+
+  bitcoin-signet:
+    build: ./bitcoin-signet
+    container_name: bitcoin-signet
+    volumes:
+      - bitcoin_signet_install:/opt/bitcoin
+      - ./bitcoin-signet/data:/workspace/bitcoin
+    env_file: .env
     networks:
       - corecraft
 
@@ -50,7 +56,8 @@ services:
 volumes:
   bundle_cache:
   bundle_cache_v2:
-  bitcoin_install:
+  bitcoin_regtest_install:
+  bitcoin_signet_install:
 
 networks:
   corecraft:

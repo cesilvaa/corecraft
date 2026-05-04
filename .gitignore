@@ -48,9 +48,11 @@ chainstate/
 indexes/
 wallets/
 
-# Bitcoin node data (bind mounts)
-bitcoin/node1/data/
-bitcoin/node2/data/
+# Bitcoin node data (bind mounts — ignora conteúdo, mantém a pasta via .gitkeep)
+bitcoin-regtest/data/*
+!bitcoin-regtest/data/.gitkeep
+bitcoin-signet/data/*
+!bitcoin-signet/data/.gitkeep
 
 # Local planning notes
 planejamento/

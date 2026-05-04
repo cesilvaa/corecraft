@@ -9,8 +9,7 @@ ENV PATH="/opt/bitcoin/bin:$PATH"
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-COPY node1/bitcoin.conf.template /etc/bitcoin/node1/bitcoin.conf.template
-COPY node2/bitcoin.conf.template /etc/bitcoin/node2/bitcoin.conf.template
+COPY bitcoin.conf.template /etc/bitcoin/bitcoin.conf.template
 
 WORKDIR /workspace
 

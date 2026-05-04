@@ -8,7 +8,8 @@ O objetivo deste repositório é organizar os trabalhos desenvolvidos ao longo d
 
 ```text
 corecraft/
-├── bitcoin/         container Bitcoin Core (dois nodes)
+├── bitcoin-regtest/ container Bitcoin Core — regtest
+├── bitcoin-signet/  container Bitcoin Core — signet
 ├── atividade-1/     corecraft-v1
 ├── atividade-2/     corecraft-v2
 ├── atividade-3/     corecraft-v3
@@ -94,12 +95,12 @@ cp atividade-N/.env.example atividade-N/.env.development
 cp atividade-N/.env.sandbox.example atividade-N/.env.sandbox
 ```
 
-**Ambiente `development`** conecta ao node1 (**regtest**).  
-**Ambiente `sandbox`** conecta ao node2 (**signet**).
+**Ambiente `development`** conecta ao container `bitcoin-regtest` (**regtest**).  
+**Ambiente `sandbox`** conecta ao container `bitcoin-signet` (**signet**).
 
 | Variável | Descrição |
 |----------|-----------|
-| `BITCOIN_RPC_HOST` | Nome do serviço Bitcoin Core no Docker (`bitcoin`) |
+| `BITCOIN_RPC_HOST` | Nome do serviço Bitcoin Core no Docker (`bitcoin-regtest` ou `bitcoin-signet`) |
 | `BITCOIN_RPC_PORT` | Porta RPC do node |
 | `BITCOIN_RPC_NETWORK` | `regtest` (development) ou `signet` (sandbox) |
 
@@ -107,7 +108,7 @@ A partir da **v2**, há variáveis adicionais para o listener ZMQ:
 
 | Variável | Descrição |
 |----------|-----------|
-| `BITCOIN_ZMQ_HOST` | Nome do serviço Bitcoin Core no Docker (`bitcoin`) |
+| `BITCOIN_ZMQ_HOST` | Nome do serviço Bitcoin Core no Docker (`bitcoin-regtest` ou `bitcoin-signet`) |
 | `BITCOIN_ZMQ_PORT` | Porta ZMQ do node |
 | `BITCOIN_ZMQ_ENABLED` | `true` para ativar o listener |
 
@@ -126,34 +127,28 @@ A partir da **v2**, há variáveis adicionais para o listener ZMQ:
 
 ## Como executar
 
-Na primeira execução o container `bitcoin` baixa e instala o Bitcoin Core automaticamente. Os nodes só sobem se as variáveis `NODE1_NETWORK` e/ou `NODE2_NETWORK` forem definidas.
+Na primeira execução cada container Bitcoin Core baixa e instala o Bitcoin Core automaticamente e já inicia o node na rede correspondente.
 
 ```bash
-# Subir o container sem iniciar nenhum node
-docker compose up bitcoin
+# Subir o node regtest
+docker compose up bitcoin-regtest
 
-# Subir com node1 em regtest e node2 em signet (configuração padrão do curso)
-NODE1_NETWORK=regtest NODE2_NETWORK=signet docker compose up bitcoin
+# Subir o node signet
+docker compose up bitcoin-signet
 
-# Subir apenas o node1 em regtest
-NODE1_NETWORK=regtest docker compose up bitcoin
+# Subir ambos os nodes
+docker compose up bitcoin-regtest bitcoin-signet
 
-# Outras combinações possíveis
-NODE1_NETWORK=signet NODE2_NETWORK=regtest docker compose up bitcoin
-NODE1_NETWORK=signet NODE2_NETWORK=signet docker compose up bitcoin
-NODE1_NETWORK=regtest NODE2_NETWORK=regtest docker compose up bitcoin
-```
-
-# corecraft-v1 — development (padrão)
+# corecraft-v1 — development (regtest, padrão)
 docker compose up corecraft-v1
 
-# corecraft-v1 — sandbox
+# corecraft-v1 — sandbox (signet)
 RAILS_ENV=sandbox docker compose up corecraft-v1
 
-# corecraft-v2 — development (padrão)
+# corecraft-v2 — development (regtest, padrão)
 docker compose up corecraft-v2
 
-# corecraft-v2 — sandbox
+# corecraft-v2 — sandbox (signet)
 RAILS_ENV=sandbox docker compose up corecraft-v2
 ```
 
@@ -183,17 +178,17 @@ docker exec corecraft-v2 bundle exec rspec --format documentation
 
 ## Populando o panel (regtest)
 
-Os comandos abaixo devem ser executados **dentro do container Bitcoin Core**:
+Os comandos abaixo devem ser executados **dentro do container `bitcoin-regtest`**:
 
 ```bash
-docker exec -it bitcoin bash
+docker exec -it bitcoin-regtest bash
 ```
 
-Dentro do container, defina o caminho do `bitcoin-cli` e do datadir do node regtest:
+Dentro do container, defina o caminho do `bitcoin-cli` e do datadir:
 
 ```bash
 export BITCOIN_CLI=/opt/bitcoin/bin/bitcoin-cli
-export NODE_DATADIR=/workspace/bitcoin/node1
+export NODE_DATADIR=/workspace/bitcoin
 ```
 
 ### 1. Criar (ou carregar) a wallet e obter um endereço de mineração
