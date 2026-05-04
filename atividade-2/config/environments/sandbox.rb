@@ -17,4 +17,5 @@ Rails.application.configure do
   config.action_dispatch.verbose_redirect_logs = true
   config.assets.quiet = true
   config.action_controller.raise_on_missing_callback_actions = true
+  config.hosts << "ideology-reverse-haste.ngrok-free.app"
 end
